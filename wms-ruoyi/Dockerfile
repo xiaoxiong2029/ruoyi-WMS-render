@@ -10,8 +10,17 @@ WORKDIR /app
 ENV TZ=Asia/Shanghai
 ENV JAVA_OPTS=""
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends mariadb-server mariadb-client \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p /run/mysqld \
+    && chown -R mysql:mysql /run/mysqld /var/lib/mysql
+
 COPY --from=build /workspace/ruoyi-admin-wms/target/ruoyi-admin-wms.jar /app/app.jar
+COPY script/sql/wms.sql /app/init.sql
+COPY script/bin/render-start.sh /app/render-start.sh
+RUN chmod +x /app/render-start.sh
 
 EXPOSE 8080
 
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -Dserver.port=${PORT:-8080} -jar /app/app.jar"]
+ENTRYPOINT ["/app/render-start.sh"]
