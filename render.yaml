@@ -37,7 +37,6 @@ services:
     name: ruoyi-vue
     runtime: static
     rootDir: ruo-yi-wms-vue
-    region: oregon
     buildCommand: npm ci && npm run build:prod
     staticPublishPath: dist
     envVars:
