@@ -1,0 +1,13 @@
+.DS_Store
+Thumbs.db
+
+**/.idea/
+**/.vscode/
+**/*.iml
+
+**/target/
+**/dist/
+**/node_modules/
+**/logs/
+**/*.log
+**/.flattened-pom.xml
