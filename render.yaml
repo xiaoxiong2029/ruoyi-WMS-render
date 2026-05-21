@@ -1,9 +1,17 @@
 services:
+  - type: keyvalue
+    name: ruoyi-redis
+    plan: free
+    region: oregon
+    ipAllowList: []
+    maxmemoryPolicy: allkeys-lru
+
   - type: web
     name: ruoyi
     runtime: docker
     rootDir: wms-ruoyi
-    plan: starter
+    plan: free
+    region: oregon
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: render
@@ -19,15 +27,17 @@ services:
         sync: false
       - key: MYSQL_PASSWORD
         sync: false
-      - key: REDIS_HOST
-        sync: false
-      - key: REDIS_PORT
-        value: 6379
+      - key: REDIS_URL
+        fromService:
+          name: ruoyi-redis
+          type: keyvalue
+          property: connectionString
 
   - type: web
     name: ruoyi-vue
     runtime: static
     rootDir: ruo-yi-wms-vue
+    region: oregon
     buildCommand: npm ci && npm run build:prod
     staticPublishPath: dist
     envVars:

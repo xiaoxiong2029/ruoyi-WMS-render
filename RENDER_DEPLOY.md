@@ -23,13 +23,12 @@ MYSQL_PORT=3306
 MYSQL_DATABASE=ry_wms
 MYSQL_USER=<your mysql user>
 MYSQL_PASSWORD=<your mysql password>
-REDIS_HOST=<your key-value internal host>
-REDIS_PORT=6379
-REDIS_PASSWORD=<set only if your Redis/Key Value service requires it>
-REDIS_SSL=false
+REDIS_URL=<Render Key Value internal URL>
 ```
 
-Render injects `PORT` automatically.
+Render injects `PORT` automatically. If you deploy from the root `render.yaml`
+Blueprint, Render creates the `ruoyi-redis` Key Value service and fills
+`REDIS_URL` automatically.
 
 ## Frontend static site
 
