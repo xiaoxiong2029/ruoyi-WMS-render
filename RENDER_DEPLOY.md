@@ -2,8 +2,14 @@
 
 This project runs as two Render services:
 
+- `ruoyi-mysql`: private MySQL service with a persistent disk.
+- `ruoyi-redis`: Render Key Value service.
 - `ruoyi`: Docker web service for the Spring Boot backend.
 - `ruoyi-vue`: Static Site for the Vue frontend.
+
+The root `render.yaml` Blueprint creates `ruoyi-mysql`, `ruoyi-redis`,
+`ruoyi`, and `ruoyi-vue` together. MySQL and Redis connection variables are
+injected automatically into the backend.
 
 ## Backend service
 
@@ -18,17 +24,17 @@ Environment variables:
 ```text
 SPRING_PROFILES_ACTIVE=render
 TZ=Asia/Shanghai
-MYSQL_HOST=<your mysql internal host>
+MYSQL_HOST=<injected by Blueprint>
 MYSQL_PORT=3306
 MYSQL_DATABASE=ry_wms
-MYSQL_USER=<your mysql user>
-MYSQL_PASSWORD=<your mysql password>
-REDIS_URL=<Render Key Value internal URL>
+MYSQL_USER=ruoyi
+MYSQL_PASSWORD=<injected by Blueprint>
+REDIS_URL=<injected by Blueprint>
 ```
 
 Render injects `PORT` automatically. If you deploy from the root `render.yaml`
-Blueprint, Render creates the `ruoyi-redis` Key Value service and fills
-`REDIS_URL` automatically.
+Blueprint, Render creates MySQL and Key Value services and fills the backend
+database/cache variables automatically.
 
 ## Frontend static site
 
@@ -53,4 +59,5 @@ Action: Rewrite
 
 ## Database
 
-Create database `ry_wms`, then import `ry_wms_full.sql`.
+The `ruoyi-mysql` Docker image imports `ry_wms_full.sql` automatically on the
+first MySQL startup, before the persistent disk has data.

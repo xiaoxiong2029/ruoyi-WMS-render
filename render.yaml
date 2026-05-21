@@ -1,4 +1,25 @@
 services:
+  - type: pserv
+    name: ruoyi-mysql
+    runtime: docker
+    plan: starter
+    region: oregon
+    dockerfilePath: ./wms-mysql/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: MYSQL_DATABASE
+        value: ry_wms
+      - key: MYSQL_USER
+        value: ruoyi
+      - key: MYSQL_PASSWORD
+        generateValue: true
+      - key: MYSQL_ROOT_PASSWORD
+        generateValue: true
+    disk:
+      name: mysql-data
+      mountPath: /var/lib/mysql
+      sizeGB: 10
+
   - type: keyvalue
     name: ruoyi-redis
     plan: free
@@ -18,15 +39,21 @@ services:
       - key: TZ
         value: Asia/Shanghai
       - key: MYSQL_HOST
-        sync: false
+        fromService:
+          name: ruoyi-mysql
+          type: pserv
+          property: host
       - key: MYSQL_PORT
         value: 3306
       - key: MYSQL_DATABASE
         value: ry_wms
       - key: MYSQL_USER
-        sync: false
+        value: ruoyi
       - key: MYSQL_PASSWORD
-        sync: false
+        fromService:
+          name: ruoyi-mysql
+          type: pserv
+          envVarKey: MYSQL_PASSWORD
       - key: REDIS_URL
         fromService:
           name: ruoyi-redis
